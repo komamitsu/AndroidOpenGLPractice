@@ -18,7 +18,7 @@ package com.komamitsu.android.openglsample;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.nio.IntBuffer;
+import java.nio.FloatBuffer;
 
 import javax.microedition.khronos.opengles.GL10;
 
@@ -29,8 +29,8 @@ class Cube
 {
   public Cube()
   {
-    int one = 0x10000;
-    int vertices[] = {
+    float one = 2.5f;
+    float vertices[] = {
       -one, -one, -one,
       one, -one, -one,
       one, one, -one,
@@ -41,7 +41,7 @@ class Cube
       -one, one, one,
     };
 
-    int colors[] = {
+    float colors[] = {
       0, 0, 0, one,
       one, 0, 0, one,
       one, one, 0, one,
@@ -71,13 +71,13 @@ class Cube
 
     ByteBuffer vbb = ByteBuffer.allocateDirect(vertices.length * 4);
     vbb.order(ByteOrder.nativeOrder());
-    mVertexBuffer = vbb.asIntBuffer();
+    mVertexBuffer = vbb.asFloatBuffer();
     mVertexBuffer.put(vertices);
     mVertexBuffer.position(0);
 
     ByteBuffer cbb = ByteBuffer.allocateDirect(colors.length * 4);
     cbb.order(ByteOrder.nativeOrder());
-    mColorBuffer = cbb.asIntBuffer();
+    mColorBuffer = cbb.asFloatBuffer();
     mColorBuffer.put(colors);
     mColorBuffer.position(0);
 
@@ -88,13 +88,13 @@ class Cube
 
   public void draw(GL10 gl)
   {
-    gl.glFrontFace(GL10.GL_CW);
-    gl.glVertexPointer(3, GL10.GL_FIXED, 0, mVertexBuffer);
-    gl.glColorPointer(4, GL10.GL_FIXED, 0, mColorBuffer);
+    // gl.glFrontFace(GL10.GL_CW);
+    gl.glVertexPointer(3, GL10.GL_FLOAT, 0, mVertexBuffer);
+    gl.glColorPointer(4, GL10.GL_FLOAT, 0, mColorBuffer);
     gl.glDrawElements(GL10.GL_TRIANGLES, 36, GL10.GL_UNSIGNED_BYTE, mIndexBuffer);
   }
 
-  private final IntBuffer mVertexBuffer;
-  private final IntBuffer mColorBuffer;
+  private final FloatBuffer mVertexBuffer;
+  private final FloatBuffer mColorBuffer;
   private final ByteBuffer mIndexBuffer;
 }

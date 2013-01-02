@@ -125,7 +125,7 @@ class TouchSurfaceView extends GLSurfaceView {
 
       gl.glMatrixMode(GL10.GL_MODELVIEW);
       gl.glLoadIdentity();
-      gl.glTranslatef(0, 0, -3.0f);
+      // gl.glTranslatef(0, 0, -3.0f);
       gl.glRotatef(mAngleX, 0, 1, 0);
       gl.glRotatef(mAngleY, 1, 0, 0);
 
