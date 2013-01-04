@@ -30,7 +30,7 @@ class Cube
   public Cube()
   {
     float one = 2.5f;
-    float gLen = one * 3;
+    float gLen = one * 6;
     float vertices[] = {
       // 前面
       -gLen, -one, gLen,
