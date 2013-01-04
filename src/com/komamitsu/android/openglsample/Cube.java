@@ -30,35 +30,103 @@ class Cube
   public Cube()
   {
     float one = 2.5f;
+    float gLen = one * 3;
     float vertices[] = {
-      -one, -one, -one,
-      one, -one, -one,
-      one, one, -one,
-      -one, one, -one,
-      -one, -one, one,
-      one, -one, one,
-      one, one, one,
-      -one, one, one,
+      // 前面
+      -gLen, -one, gLen,
+      gLen, -one, gLen,
+      -gLen, one, gLen,
+      gLen, one, gLen,
+      // 背面
+      -gLen, -one, -gLen,
+      -gLen, one, -gLen,
+      gLen, -one, -gLen,
+      gLen, one, -gLen,
+      // 左面
+      -gLen, -one, gLen,
+      -gLen, one, gLen,
+      -gLen, -one, -gLen,
+      -gLen, one, -gLen,
+      // 右面
+      gLen, -one, -gLen,
+      gLen, one, -gLen,
+      gLen, -one, gLen,
+      gLen, one, gLen,
+      // 上面
+      -gLen, one, gLen,
+      gLen, one, gLen,
+      -gLen, one, -gLen,
+      gLen, one, -gLen,
+      // 下面
+      -gLen, -one, gLen,
+      -gLen, -one, -gLen,
+      gLen, -one, gLen,
+      gLen, -one, -gLen,
     };
 
+    float norms[] = {
+      // 前面
+      0f, 0f, -1f,
+      0f, 0f, -1f,
+      0f, 0f, -1f,
+      0f, 0f, -1f,
+      // 裏面
+      0f, 0f, 1f,
+      0f, 0f, 1f,
+      0f, 0f, 1f,
+      0f, 0f, 1f,
+      // 左面
+      1f, 0f, 0f,
+      1f, 0f, 0f,
+      1f, 0f, 0f,
+      1f, 0f, 0f,
+      // 右面
+      -1f, 0f, 0f,
+      -1f, 0f, 0f,
+      -1f, 0f, 0f,
+      -1f, 0f, 0f,
+      // 上面
+      0f, -1f, 0f,
+      0f, -1f, 0f,
+      0f, -1f, 0f,
+      0f, -1f, 0f,
+      // 下面
+      0f, 1f, 0f,
+      0f, 1f, 0f,
+      0f, 1f, 0f,
+      0f, 1f, 0f
+    };
     float colors[] = {
-      0, 0, 0, one,
-      one, 0, 0, one,
-      one, one, 0, one,
-      0, one, 0, one,
-      0, 0, one, one,
-      one, 0, one, one,
-      one, one, one, one,
-      0, one, one, one,
-    };
-
-    byte indices[] = {
-      0, 4, 5, 0, 5, 1,
-      1, 5, 6, 1, 6, 2,
-      2, 6, 7, 2, 7, 3,
-      3, 7, 4, 3, 4, 0,
-      4, 7, 6, 4, 6, 5,
-      3, 0, 1, 3, 1, 2
+      // 前面
+      0f, 0f, -1f, 1f,
+      0f, 0f, -1f, 1f,
+      0f, 0f, -1f, 1f,
+      0f, 0f, -1f, 1f,
+      // 裏面
+      0f, 0f, 1f, 1f,
+      0f, 0f, 1f, 1f,
+      0f, 0f, 1f, 1f,
+      0f, 0f, 1f, 1f,
+      // 左面
+      1f, 0f, 0f, 1f,
+      1f, 0f, 0f, 1f,
+      1f, 0f, 0f, 1f,
+      1f, 0f, 0f, 1f,
+      // 右面
+      -1f, 0f, 0f, 1f,
+      -1f, 0f, 0f, 1f,
+      -1f, 0f, 0f, 1f,
+      -1f, 0f, 0f, 1f,
+      // 上面
+      0f, -1f, 0f, 1f,
+      0f, -1f, 0f, 1f,
+      0f, -1f, 0f, 1f,
+      0f, -1f, 0f, 1f,
+      // 下面
+      0f, 1f, 0f, 1f,
+      0f, 1f, 0f, 1f,
+      0f, 1f, 0f, 1f,
+      0f, 1f, 0f, 1f,
     };
 
     // Buffers to be passed to gl*Pointer() functions
@@ -75,26 +143,49 @@ class Cube
     mVertexBuffer.put(vertices);
     mVertexBuffer.position(0);
 
+    ByteBuffer nbb = ByteBuffer.allocateDirect(norms.length * 4);
+    nbb.order(ByteOrder.nativeOrder());
+    mNormalBuffer = nbb.asFloatBuffer();
+    mNormalBuffer.put(norms);
+    mNormalBuffer.position(0);
+
     ByteBuffer cbb = ByteBuffer.allocateDirect(colors.length * 4);
     cbb.order(ByteOrder.nativeOrder());
     mColorBuffer = cbb.asFloatBuffer();
     mColorBuffer.put(colors);
     mColorBuffer.position(0);
-
-    mIndexBuffer = ByteBuffer.allocateDirect(indices.length);
-    mIndexBuffer.put(indices);
-    mIndexBuffer.position(0);
   }
 
   public void draw(GL10 gl)
   {
-    // gl.glFrontFace(GL10.GL_CW);
+    // gl.glFrontFace(GL10.GL_CCW);
+    gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
     gl.glVertexPointer(3, GL10.GL_FLOAT, 0, mVertexBuffer);
-    gl.glColorPointer(4, GL10.GL_FLOAT, 0, mColorBuffer);
-    gl.glDrawElements(GL10.GL_TRIANGLES, 36, GL10.GL_UNSIGNED_BYTE, mIndexBuffer);
+
+    gl.glEnableClientState(GL10.GL_NORMAL_ARRAY);
+    gl.glNormalPointer(GL10.GL_FLOAT, 0, mNormalBuffer);
+
+    // gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
+    // gl.glColorPointer(4, GL10.GL_FLOAT, 0, mColorBuffer);
+
+    // 前面と背面のプリミティブの描画
+    gl.glColor4f(0.2f, 0.2f, 0.7f, 1.0f);
+    gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
+    gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 4, 4);
+
+    // 左面と右面のプリミティブの描画
+    gl.glColor4f(0.2f, 0.2f, 0.7f, 1.0f);
+    gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 8, 4);
+    gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 12, 4);
+
+    // 上面と下面のプリミティブの描画
+    gl.glColor4f(0.7f, 0.7f, 1.0f, 1.0f);
+    gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 16, 4);
+    gl.glColor4f(0, 0, 0.2f, 1.0f);
+    gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 20, 4);
   }
 
   private final FloatBuffer mVertexBuffer;
+  private final FloatBuffer mNormalBuffer;
   private final FloatBuffer mColorBuffer;
-  private final ByteBuffer mIndexBuffer;
 }

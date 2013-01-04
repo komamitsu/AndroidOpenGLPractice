@@ -125,7 +125,7 @@ class TouchSurfaceView extends GLSurfaceView {
 
       gl.glMatrixMode(GL10.GL_MODELVIEW);
       gl.glLoadIdentity();
-      // gl.glTranslatef(0, 0, -3.0f);
+      gl.glTranslatef(0, 0, -3.0f);
       gl.glRotatef(mAngleX, 0, 1, 0);
       gl.glRotatef(mAngleY, 1, 0, 0);
 
@@ -148,7 +148,7 @@ class TouchSurfaceView extends GLSurfaceView {
       float ratio = (float) width / height;
       gl.glMatrixMode(GL10.GL_PROJECTION);
       gl.glLoadIdentity();
-      gl.glFrustumf(-ratio, ratio, -1, 1, 1, 10);
+      gl.glFrustumf(-ratio, ratio, -1, 1, 0.5f, 50);
     }
 
     @Override
@@ -164,13 +164,31 @@ class TouchSurfaceView extends GLSurfaceView {
        * Some one-time OpenGL initialization can be made here
        * probably based on features of this particular context
        */
-      gl.glHint(GL10.GL_PERSPECTIVE_CORRECTION_HINT,
-          GL10.GL_FASTEST);
+      gl.glHint(GL10.GL_PERSPECTIVE_CORRECTION_HINT, GL10.GL_FASTEST);
 
       gl.glClearColor(1, 1, 1, 1);
-      gl.glEnable(GL10.GL_CULL_FACE);
+      gl.glDisable(GL10.GL_CULL_FACE);
       gl.glShadeModel(GL10.GL_SMOOTH);
       gl.glEnable(GL10.GL_DEPTH_TEST);
+      gl.glEnable(GL10.GL_LIGHTING);
+      gl.glEnable(GL10.GL_LIGHT0);
+      gl.glDepthFunc(GL10.GL_LEQUAL);
+
+      float[] lightAmbient = new float[] { 0.2f, 0.3f, 0.6f, 1.0f };// 光源アンビエント
+      float[] lightDiffuse = new float[] { 0.2f, 0.3f, 0.6f, 1.0f };// 光源ディフューズ
+      float[] lightPos = new float[] { 0, 0, 0, 1 }; // 光源位置
+      float[] matAmbient = new float[] { 0.6f, 0.6f, 0.6f, 1.0f };// マテリアルアンビエント
+      float[] matDiffuse = new float[] { 0.6f, 0.6f, 0.6f, 1.0f };// マテリアルディフューズ
+
+      // ライティングの指定
+      gl.glEnable(GL10.GL_LIGHTING);
+      gl.glEnable(GL10.GL_LIGHT0);
+      gl.glEnable(GL10.GL_COLOR_MATERIAL);
+      gl.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_AMBIENT, matAmbient, 0);
+      gl.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_DIFFUSE, matDiffuse, 0);
+      gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_AMBIENT, lightAmbient, 0);
+      gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_DIFFUSE, lightDiffuse, 0);
+      gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_POSITION, lightPos, 0);
     }
 
     private final Cube mCube;
