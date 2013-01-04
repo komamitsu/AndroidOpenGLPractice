@@ -6,7 +6,6 @@ import javax.microedition.khronos.opengles.GL10;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
 
 /**
  * Implement a simple rotation control.
@@ -25,31 +24,6 @@ public class MyGlSurfaceView extends GLSurfaceView implements OnKeyEventListener
     mRenderer = new CubeRenderer();
     setRenderer(mRenderer);
     setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
-  }
-
-  @Override
-  public boolean onTrackballEvent(MotionEvent e) {
-    mRenderer.mAngleX += e.getX() * TRACKBALL_SCALE_FACTOR;
-    mRenderer.mAngleY += e.getY() * TRACKBALL_SCALE_FACTOR;
-    requestRender();
-    return true;
-  }
-
-  @Override
-  public boolean onTouchEvent(MotionEvent e) {
-    float x = e.getX();
-    float y = e.getY();
-    switch (e.getAction()) {
-    case MotionEvent.ACTION_MOVE:
-      float dx = x - mPreviousX;
-      float dy = y - mPreviousY;
-      mRenderer.mAngleX += dx * TOUCH_SCALE_FACTOR;
-      mRenderer.mAngleY += dy * TOUCH_SCALE_FACTOR;
-      requestRender();
-    }
-    mPreviousX = x;
-    mPreviousY = y;
-    return true;
   }
 
   /**
