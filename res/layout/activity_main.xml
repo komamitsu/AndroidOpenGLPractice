@@ -3,13 +3,57 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:padding="@dimen/padding_medium"
-        android:text="@string/hello_world"
-        tools:context=".MainActivity" />
+    <com.komamitsu.android.openglsample.MyGlSurfaceView
+        android:id="@+id/glsurface"
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+        android:layout_centerInParent="true" />
+    
+    <RelativeLayout
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+    >
+	    <RelativeLayout
+	        android:layout_margin="20dp"
+		    android:layout_width="90dp"
+		    android:layout_height="90dp"
+	        android:layout_alignParentLeft="true"
+	        android:layout_alignParentBottom="true"
+	        android:background="#33ffffff"
+	    >
+	    <ImageView 
+	        android:id="@+id/button_top"
+	        android:src="@drawable/arrow_top"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_alignParentTop="true"
+		    android:layout_centerHorizontal="true"
+	    />
+	    <ImageView 
+	        android:id="@+id/button_bottom"
+	        android:src="@drawable/arrow_bottom"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_alignParentBottom="true"
+		    android:layout_centerHorizontal="true"
+	    />
+	    <ImageView 
+	        android:id="@+id/button_left"
+	        android:src="@drawable/arrow_left"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_alignParentLeft="true"
+		    android:layout_centerVertical="true"
+	    />
+	    <ImageView 
+	        android:id="@+id/button_right"
+	        android:src="@drawable/arrow_right"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_alignParentRight="true"
+		    android:layout_centerVertical="true"
+	    />
+	    </RelativeLayout>
+    </RelativeLayout>
 
 </RelativeLayout>

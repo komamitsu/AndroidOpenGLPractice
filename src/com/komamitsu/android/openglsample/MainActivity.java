@@ -16,14 +16,20 @@
 
 package com.komamitsu.android.openglsample;
 
-import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.opengles.GL10;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import android.app.Activity;
-import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.MotionEvent;
+import android.view.View;
+import android.view.View.OnTouchListener;
+
+import com.komamitsu.android.openglsample.OnKeyEventListener.EventType;
 
 /**
  * Wrapper activity demonstrating the use of {@link GLSurfaceView}, a view that
@@ -32,16 +38,50 @@ import android.view.MotionEvent;
  * Shows: + How to redraw in response to user input.
  */
 public class MainActivity extends Activity {
+  protected static final String TAG = MainActivity.class.getSimpleName();
+  private static final int BUTTON_EVENT_INDEX_TOP = 0;
+  private static final int BUTTON_EVENT_INDEX_BOTTOM = 1;
+  private static final int BUTTON_EVENT_INDEX_LEFT = 2;
+  private static final int BUTTON_EVENT_INDEX_RIGHT = 3;
+  private volatile boolean[] buttonPusheEvents;
+  private volatile ExecutorService buttonMonitorExecutor;
+  private static final List<Pair<Integer, Integer>> BUTTON_EVENT_REGISTER_MAPPING =
+      Arrays.asList(
+          new Pair<Integer, Integer>(R.id.button_top, BUTTON_EVENT_INDEX_TOP),
+          new Pair<Integer, Integer>(R.id.button_bottom, BUTTON_EVENT_INDEX_BOTTOM),
+          new Pair<Integer, Integer>(R.id.button_left, BUTTON_EVENT_INDEX_LEFT),
+          new Pair<Integer, Integer>(R.id.button_right, BUTTON_EVENT_INDEX_RIGHT)
+          );
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
     // Create our Preview view and set it as the content of our
     // Activity
-    mGLSurfaceView = new TouchSurfaceView(this);
-    setContentView(mGLSurfaceView);
+    setContentView(R.layout.activity_main);
+    mGLSurfaceView = (MyGlSurfaceView) findViewById(R.id.glsurface);
     mGLSurfaceView.requestFocus();
     mGLSurfaceView.setFocusableInTouchMode(true);
+
+    for (Pair<Integer, Integer> idAndIndex : BUTTON_EVENT_REGISTER_MAPPING) {
+      Integer id = idAndIndex.first;
+      final Integer index = idAndIndex.second;
+      findViewById(id).setOnTouchListener(new OnTouchListener() {
+        @Override
+        public boolean onTouch(View arg0, MotionEvent ev) {
+          switch (ev.getAction()) {
+          case MotionEvent.ACTION_DOWN:
+            buttonPusheEvents[index] = true;
+            break;
+          case MotionEvent.ACTION_UP:
+            buttonPusheEvents[index] = false;
+            break;
+          }
+          return true;
+        }
+      });
+    }
   }
 
   @Override
@@ -50,6 +90,42 @@ public class MainActivity extends Activity {
     // to take appropriate action when the activity looses focus
     super.onResume();
     mGLSurfaceView.onResume();
+
+    stopButtonMonitor();
+    clearPushEvents();
+
+    buttonMonitorExecutor = Executors.newSingleThreadExecutor();
+    buttonMonitorExecutor.execute(new Runnable() {
+
+      @Override
+      public void run() {
+        while (buttonMonitorExecutor != null && !buttonMonitorExecutor.isShutdown()) {
+          if (buttonPusheEvents[BUTTON_EVENT_INDEX_LEFT]) {
+            mGLSurfaceView.onKeyEvent(EventType.LEFT);
+          }
+
+          if (buttonPusheEvents[BUTTON_EVENT_INDEX_RIGHT]) {
+            mGLSurfaceView.onKeyEvent(EventType.RIGHT);
+          }
+
+          try {
+            Thread.sleep(1000 / 30);
+          } catch (InterruptedException e) {
+          }
+        }
+      }
+    });
+  }
+
+  private void stopButtonMonitor() {
+    if (buttonMonitorExecutor != null) {
+      buttonMonitorExecutor.shutdownNow();
+    }
+    buttonMonitorExecutor = null;
+  }
+
+  private void clearPushEvents() {
+    buttonPusheEvents = new boolean[] { false, false, false, false };
   }
 
   @Override
@@ -58,147 +134,10 @@ public class MainActivity extends Activity {
     // to take appropriate action when the activity looses focus
     super.onPause();
     mGLSurfaceView.onPause();
+
+    stopButtonMonitor();
+    clearPushEvents();
   }
 
-  private GLSurfaceView mGLSurfaceView;
-}
-
-/**
- * Implement a simple rotation control.
- * 
- */
-class TouchSurfaceView extends GLSurfaceView {
-
-  public TouchSurfaceView(Context context) {
-    super(context);
-    mRenderer = new CubeRenderer();
-    setRenderer(mRenderer);
-    setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
-  }
-
-  @Override
-  public boolean onTrackballEvent(MotionEvent e) {
-    mRenderer.mAngleX += e.getX() * TRACKBALL_SCALE_FACTOR;
-    mRenderer.mAngleY += e.getY() * TRACKBALL_SCALE_FACTOR;
-    requestRender();
-    return true;
-  }
-
-  @Override
-  public boolean onTouchEvent(MotionEvent e) {
-    float x = e.getX();
-    float y = e.getY();
-    switch (e.getAction()) {
-    case MotionEvent.ACTION_MOVE:
-      float dx = x - mPreviousX;
-      float dy = y - mPreviousY;
-      mRenderer.mAngleX += dx * TOUCH_SCALE_FACTOR;
-      mRenderer.mAngleY += dy * TOUCH_SCALE_FACTOR;
-      requestRender();
-    }
-    mPreviousX = x;
-    mPreviousY = y;
-    return true;
-  }
-
-  /**
-   * Render a cube.
-   */
-  private class CubeRenderer implements GLSurfaceView.Renderer {
-    public CubeRenderer() {
-      mCube = new Cube();
-    }
-
-    @Override
-    public void onDrawFrame(GL10 gl) {
-      /*
-       * Usually, the first thing one might want to do is to clear
-       * the screen. The most efficient way of doing this is to use
-       * glClear().
-       */
-
-      gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
-
-      /*
-       * Now we're ready to draw some 3D objects
-       */
-
-      gl.glMatrixMode(GL10.GL_MODELVIEW);
-      gl.glLoadIdentity();
-      gl.glTranslatef(0, 0, -3.0f);
-      gl.glRotatef(mAngleX, 0, 1, 0);
-      gl.glRotatef(mAngleY, 1, 0, 0);
-
-      gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-      gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
-
-      mCube.draw(gl);
-    }
-
-    @Override
-    public void onSurfaceChanged(GL10 gl, int width, int height) {
-      gl.glViewport(0, 0, width, height);
-
-      /*
-       * Set our projection matrix. This doesn't have to be done
-       * each time we draw, but usually a new projection needs to
-       * be set when the viewport is resized.
-       */
-
-      float ratio = (float) width / height;
-      gl.glMatrixMode(GL10.GL_PROJECTION);
-      gl.glLoadIdentity();
-      gl.glFrustumf(-ratio, ratio, -1, 1, 0.5f, 50);
-    }
-
-    @Override
-    public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-      /*
-       * By default, OpenGL enables features that improve quality
-       * but reduce performance. One might want to tweak that
-       * especially on software renderer.
-       */
-      gl.glDisable(GL10.GL_DITHER);
-
-      /*
-       * Some one-time OpenGL initialization can be made here
-       * probably based on features of this particular context
-       */
-      gl.glHint(GL10.GL_PERSPECTIVE_CORRECTION_HINT, GL10.GL_FASTEST);
-
-      gl.glClearColor(1, 1, 1, 1);
-      gl.glDisable(GL10.GL_CULL_FACE);
-      gl.glShadeModel(GL10.GL_SMOOTH);
-      gl.glEnable(GL10.GL_DEPTH_TEST);
-      gl.glEnable(GL10.GL_LIGHTING);
-      gl.glEnable(GL10.GL_LIGHT0);
-      gl.glDepthFunc(GL10.GL_LEQUAL);
-
-      float[] lightAmbient = new float[] { 0.2f, 0.3f, 0.6f, 1.0f };// 光源アンビエント
-      float[] lightDiffuse = new float[] { 0.2f, 0.3f, 0.6f, 1.0f };// 光源ディフューズ
-      float[] lightPos = new float[] { 0, 0, 0, 1 }; // 光源位置
-      float[] matAmbient = new float[] { 0.6f, 0.6f, 0.6f, 1.0f };// マテリアルアンビエント
-      float[] matDiffuse = new float[] { 0.6f, 0.6f, 0.6f, 1.0f };// マテリアルディフューズ
-
-      // ライティングの指定
-      gl.glEnable(GL10.GL_LIGHTING);
-      gl.glEnable(GL10.GL_LIGHT0);
-      gl.glEnable(GL10.GL_COLOR_MATERIAL);
-      gl.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_AMBIENT, matAmbient, 0);
-      gl.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_DIFFUSE, matDiffuse, 0);
-      gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_AMBIENT, lightAmbient, 0);
-      gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_DIFFUSE, lightDiffuse, 0);
-      gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_POSITION, lightPos, 0);
-    }
-
-    private final Cube mCube;
-    public float mAngleX;
-    public float mAngleY;
-  }
-
-  private final float TOUCH_SCALE_FACTOR = 180.0f / 320;
-  private final float TRACKBALL_SCALE_FACTOR = 36.0f;
-  private final CubeRenderer mRenderer;
-  private float mPreviousX;
-  private float mPreviousY;
+  private MyGlSurfaceView mGLSurfaceView;
 }
