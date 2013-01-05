@@ -4,6 +4,7 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import android.content.Context;
+import android.graphics.PixelFormat;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
 
@@ -14,18 +15,22 @@ import android.util.AttributeSet;
 public class MyGlSurfaceView extends GLSurfaceView implements OnKeyEventListener {
   private static final String TAG = MyGlSurfaceView.class.getSimpleName();
 
-  public MyGlSurfaceView(Context context, AttributeSet attrs) {
-    super(context, attrs);
-    mRenderer = new CubeRenderer();
+  private void init() {
+    setEGLConfigChooser(8, 8, 8, 8, 16, 0);
+    getHolder().setFormat(PixelFormat.TRANSLUCENT);
     setRenderer(mRenderer);
     setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+    setZOrderOnTop(true);
+  }
+
+  public MyGlSurfaceView(Context context, AttributeSet attrs) {
+    super(context, attrs);
+    init();
   }
 
   public MyGlSurfaceView(Context context) {
     super(context);
-    mRenderer = new CubeRenderer();
-    setRenderer(mRenderer);
-    setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+    init();
   }
 
   /**
@@ -94,7 +99,7 @@ public class MyGlSurfaceView extends GLSurfaceView implements OnKeyEventListener
        */
       gl.glHint(GL10.GL_PERSPECTIVE_CORRECTION_HINT, GL10.GL_FASTEST);
 
-      gl.glClearColor(1, 1, 1, 1);
+      // gl.glClearColor(1, 1, 1, 1);
       gl.glDisable(GL10.GL_CULL_FACE);
       gl.glShadeModel(GL10.GL_SMOOTH);
       gl.glEnable(GL10.GL_DEPTH_TEST);
@@ -126,7 +131,7 @@ public class MyGlSurfaceView extends GLSurfaceView implements OnKeyEventListener
   }
 
   private final float TRACKBALL_SCALE_FACTOR = 15.0f;
-  private final CubeRenderer mRenderer;
+  private final CubeRenderer mRenderer = new CubeRenderer();
 
   @Override
   public void onKeyEvent(EventType type) {

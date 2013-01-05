@@ -53,10 +53,12 @@ class Cube
       gLen, -one, gLen,
       gLen, one, gLen,
       // 上面
+      /*
       -gLen, one, gLen,
       gLen, one, gLen,
       -gLen, one, -gLen,
       gLen, one, -gLen,
+      */
       // 下面
       -gLen, -one, gLen,
       -gLen, -one, -gLen,
@@ -86,10 +88,12 @@ class Cube
       -1f, 0f, 0f,
       -1f, 0f, 0f,
       // 上面
+      /*
       0f, -1f, 0f,
       0f, -1f, 0f,
       0f, -1f, 0f,
       0f, -1f, 0f,
+      */
       // 下面
       0f, 1f, 0f,
       0f, 1f, 0f,
@@ -118,10 +122,12 @@ class Cube
       -1f, 0f, 0f, 1f,
       -1f, 0f, 0f, 1f,
       // 上面
+      /*
       0f, -1f, 0f, 1f,
       0f, -1f, 0f, 1f,
       0f, -1f, 0f, 1f,
       0f, -1f, 0f, 1f,
+      */
       // 下面
       0f, 1f, 0f, 1f,
       0f, 1f, 0f, 1f,
@@ -174,10 +180,12 @@ class Cube
     gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 12, 4);
 
     // 上面と下面のプリミティブの描画
+    /*
     gl.glColor4f(0.7f, 0.7f, 1.0f, 1.0f);
     gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 16, 4);
+    */
     gl.glColor4f(0, 0, 0.2f, 1.0f);
-    gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 20, 4);
+    gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 16, 4);
   }
 
   private final FloatBuffer mVertexBuffer;
