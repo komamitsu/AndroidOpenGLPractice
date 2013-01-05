@@ -109,9 +109,7 @@ public class MyGlSurfaceView extends GLSurfaceView implements OnKeyEventListener
       float[] matDiffuse = new float[] { 0.6f, 0.6f, 0.6f, 1.0f };// マテリアルディフューズ
 
       // ライティングの指定
-      gl.glEnable(GL10.GL_LIGHTING);
-      gl.glEnable(GL10.GL_LIGHT0);
-      gl.glEnable(GL10.GL_COLOR_MATERIAL);
+      // gl.glEnable(GL10.GL_COLOR_MATERIAL); // avoiding SIGSEGV
       gl.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_AMBIENT, matAmbient, 0);
       gl.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_DIFFUSE, matDiffuse, 0);
       gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_AMBIENT, lightAmbient, 0);
