@@ -54,11 +54,22 @@
 	    </RelativeLayout>
     </RelativeLayout>
     
-    <com.komamitsu.android.openglsample.MyGlSurfaceView
-        android:id="@+id/glsurface"
+    <RelativeLayout
         android:layout_above="@id/controll_panel"
 	    android:layout_width="match_parent"
 	    android:layout_height="match_parent"
-        android:layout_centerInParent="true" />
-    
+        android:layout_centerInParent="true"
+    >
+	    <com.komamitsu.android.openglsample.CameraPreview
+	        android:id="@+id/camera_preview"
+		    android:layout_width="match_parent"
+		    android:layout_height="match_parent"
+	    />
+		    
+	    <com.komamitsu.android.openglsample.MyGlSurfaceView
+	        android:id="@+id/glsurface"
+		    android:layout_width="match_parent"
+		    android:layout_height="match_parent"
+	    />
+    </RelativeLayout>
 </RelativeLayout>
