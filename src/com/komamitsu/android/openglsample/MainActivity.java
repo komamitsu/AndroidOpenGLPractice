@@ -100,6 +100,14 @@ public class MainActivity extends Activity {
       @Override
       public void run() {
         while (buttonMonitorExecutor != null && !buttonMonitorExecutor.isShutdown()) {
+          if (buttonPusheEvents[BUTTON_EVENT_INDEX_TOP]) {
+            mGLSurfaceView.onKeyEvent(EventType.TOP);
+          }
+
+          if (buttonPusheEvents[BUTTON_EVENT_INDEX_BOTTOM]) {
+            mGLSurfaceView.onKeyEvent(EventType.BOTTOM);
+          }
+
           if (buttonPusheEvents[BUTTON_EVENT_INDEX_LEFT]) {
             mGLSurfaceView.onKeyEvent(EventType.LEFT);
           }

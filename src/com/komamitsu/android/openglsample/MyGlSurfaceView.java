@@ -12,6 +12,8 @@ import android.util.AttributeSet;
  * 
  */
 public class MyGlSurfaceView extends GLSurfaceView implements OnKeyEventListener {
+  private static final String TAG = MyGlSurfaceView.class.getSimpleName();
+
   public MyGlSurfaceView(Context context, AttributeSet attrs) {
     super(context, attrs);
     mRenderer = new CubeRenderer();
@@ -50,12 +52,13 @@ public class MyGlSurfaceView extends GLSurfaceView implements OnKeyEventListener
 
       gl.glMatrixMode(GL10.GL_MODELVIEW);
       gl.glLoadIdentity();
-      gl.glTranslatef(0, 0, -3.0f);
       gl.glRotatef(mAngleX, 0, 1, 0);
       gl.glRotatef(mAngleY, 1, 0, 0);
+      gl.glTranslatef(mPosX, mPosY, mPosZ);
 
       gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
       gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
+      gl.glEnableClientState(GL10.GL_NORMAL_ARRAY);
 
       mCube.draw(gl);
     }
@@ -119,21 +122,31 @@ public class MyGlSurfaceView extends GLSurfaceView implements OnKeyEventListener
     private final Cube mCube;
     public float mAngleX;
     public float mAngleY;
+    public float mPosX = 0f;
+    public float mPosY = 0f;
+    public float mPosZ = 0f;
   }
 
-  private final float TOUCH_SCALE_FACTOR = 180.0f / 320;
-  private final float TRACKBALL_SCALE_FACTOR = 36.0f;
+  private final float TRACKBALL_SCALE_FACTOR = 15.0f;
   private final CubeRenderer mRenderer;
-  private float mPreviousX;
-  private float mPreviousY;
 
   @Override
   public void onKeyEvent(EventType type) {
+    // Log.d(TAG, "onKeyEvent(start): type=" + type + ", mAngleX=" +
+    // mRenderer.mAngleX + ", mPosZ=" + mRenderer.mPosZ + ", mPosX=" +
+    // mRenderer.mPosX);
+
     switch (type) {
     case TOP:
+      mRenderer.mPosZ += Math.cos(Math.toRadians(mRenderer.mAngleX)) * 0.2;
+      mRenderer.mPosX -= Math.sin(Math.toRadians(mRenderer.mAngleX)) * 0.2;
+      requestRender();
       break;
 
     case BOTTOM:
+      mRenderer.mPosZ -= Math.cos(Math.toRadians(mRenderer.mAngleX)) * 0.2;
+      mRenderer.mPosX += Math.sin(Math.toRadians(mRenderer.mAngleX)) * 0.2;
+      requestRender();
       break;
 
     case LEFT:

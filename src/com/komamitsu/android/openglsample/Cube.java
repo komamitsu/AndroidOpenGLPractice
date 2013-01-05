@@ -159,13 +159,8 @@ class Cube
   public void draw(GL10 gl)
   {
     // gl.glFrontFace(GL10.GL_CCW);
-    gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
     gl.glVertexPointer(3, GL10.GL_FLOAT, 0, mVertexBuffer);
-
-    gl.glEnableClientState(GL10.GL_NORMAL_ARRAY);
     gl.glNormalPointer(GL10.GL_FLOAT, 0, mNormalBuffer);
-
-    // gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
     // gl.glColorPointer(4, GL10.GL_FLOAT, 0, mColorBuffer);
 
     // 前面と背面のプリミティブの描画
