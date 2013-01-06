@@ -58,9 +58,9 @@ public class MyGlSurfaceView extends GLSurfaceView implements OnKeyEventListener
 
       gl.glMatrixMode(GL10.GL_MODELVIEW);
       gl.glLoadIdentity();
-      gl.glRotatef(0, 0, 1, 0);
-      gl.glRotatef(0, 1, 0, 0);
-      gl.glTranslatef(0, 0, 0);
+      // gl.glRotatef(0, 0, 1, 0);
+      // gl.glRotatef(0, 1, 0, 0);
+      // gl.glTranslatef(0, 0, 0);
 
       GLU.gluLookAt(gl, mPosX, mPosY, mPosZ,
           mPosX + (float) Math.sin(Math.toRadians(mAngleX)),
@@ -68,7 +68,7 @@ public class MyGlSurfaceView extends GLSurfaceView implements OnKeyEventListener
           mPosZ + (float) Math.cos(Math.toRadians(mAngleX)), 0f, 1f, 0f);
 
       gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-      gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
+      // gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
       gl.glEnableClientState(GL10.GL_NORMAL_ARRAY);
 
       mCube.draw(gl);
@@ -87,7 +87,8 @@ public class MyGlSurfaceView extends GLSurfaceView implements OnKeyEventListener
       float ratio = (float) width / height;
       gl.glMatrixMode(GL10.GL_PROJECTION);
       gl.glLoadIdentity();
-      gl.glFrustumf(-ratio, ratio, -1, 1, 0.5f, 50);
+      // gl.glFrustumf(-ratio, ratio, -0.8f, 1, 0.5f, 50);
+      GLU.gluPerspective(gl, 50f, ratio, 0.2f, 50f);
     }
 
     @Override
@@ -125,15 +126,15 @@ public class MyGlSurfaceView extends GLSurfaceView implements OnKeyEventListener
       gl.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_DIFFUSE, matDiffuse, 0);
       gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_AMBIENT, lightAmbient, 0);
       gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_DIFFUSE, lightDiffuse, 0);
-      gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_POSITION, lightPos, 0);
+      // gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_POSITION, lightPos, 0);
     }
 
     private final Cube mCube;
-    public float mAngleX;
-    public float mAngleY;
+    public float mAngleX = 30f;
+    public float mAngleY = 0f;
     public float mPosX = 0f;
     public float mPosY = 0f;
-    public float mPosZ = 0f;
+    public float mPosZ = -3f;
   }
 
   private final float TRACKBALL_SCALE_FACTOR = 15.0f;

@@ -29,41 +29,42 @@ class Cube
 {
   public Cube()
   {
-    float one = 1.5f;
-    float gLen = one * 4;
+    float one = 1f;
+    float height = one * 1.5f;
+    float width = one * 10;
     float vertices[] = {
       // 前面
-      -gLen, -one, gLen,
-      gLen, -one, gLen,
-      -gLen, one, gLen,
-      gLen, one, gLen,
+      -width, -height, width,
+      width, -height, width,
+      -width, height, width,
+      width, height, width,
       // 背面
-      -gLen, -one, -gLen,
-      -gLen, one, -gLen,
-      gLen, -one, -gLen,
-      gLen, one, -gLen,
+      -width, -height, -width,
+      -width, height, -width,
+      width, -height, -width,
+      width, height, -width,
       // 左面
-      -gLen, -one, gLen,
-      -gLen, one, gLen,
-      -gLen, -one, -gLen,
-      -gLen, one, -gLen,
+      -width, -height, width,
+      -width, height, width,
+      -width, -height, -width,
+      -width, height, -width,
       // 右面
-      gLen, -one, -gLen,
-      gLen, one, -gLen,
-      gLen, -one, gLen,
-      gLen, one, gLen,
+      width, -height, -width,
+      width, height, -width,
+      width, -height, width,
+      width, height, width,
       // 上面
       /*
-      -gLen, one, gLen,
-      gLen, one, gLen,
-      -gLen, one, -gLen,
-      gLen, one, -gLen,
+      -gLen, height, gLen,
+      gLen, height, gLen,
+      -gLen, height, -gLen,
+      gLen, height, -gLen,
       */
       // 下面
-      -gLen, -one, gLen,
-      -gLen, -one, -gLen,
-      gLen, -one, gLen,
-      gLen, -one, -gLen,
+      -width, -height, width,
+      -width, -height, -width,
+      width, -height, width,
+      width, -height, -width,
     };
 
     float norms[] = {
@@ -184,7 +185,7 @@ class Cube
     gl.glColor4f(0.7f, 0.7f, 1.0f, 1.0f);
     gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 16, 4);
     */
-    gl.glColor4f(0, 0, 0.2f, 1.0f);
+    gl.glColor4f(0, 0, 0, 1.0f);
     gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 16, 4);
   }
 
