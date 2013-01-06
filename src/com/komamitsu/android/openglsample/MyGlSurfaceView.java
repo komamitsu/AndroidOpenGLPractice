@@ -6,6 +6,7 @@ import javax.microedition.khronos.opengles.GL10;
 import android.content.Context;
 import android.graphics.PixelFormat;
 import android.opengl.GLSurfaceView;
+import android.opengl.GLU;
 import android.util.AttributeSet;
 
 /**
@@ -57,9 +58,14 @@ public class MyGlSurfaceView extends GLSurfaceView implements OnKeyEventListener
 
       gl.glMatrixMode(GL10.GL_MODELVIEW);
       gl.glLoadIdentity();
-      gl.glRotatef(mAngleX, 0, 1, 0);
-      gl.glRotatef(mAngleY, 1, 0, 0);
-      gl.glTranslatef(mPosX, mPosY, mPosZ);
+      gl.glRotatef(0, 0, 1, 0);
+      gl.glRotatef(0, 1, 0, 0);
+      gl.glTranslatef(0, 0, 0);
+
+      GLU.gluLookAt(gl, mPosX, mPosY, mPosZ,
+          mPosX + (float) Math.sin(Math.toRadians(mAngleX)),
+          mPosY,
+          mPosZ + (float) Math.cos(Math.toRadians(mAngleX)), 0f, 1f, 0f);
 
       gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
       gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
@@ -142,23 +148,23 @@ public class MyGlSurfaceView extends GLSurfaceView implements OnKeyEventListener
     switch (type) {
     case TOP:
       mRenderer.mPosZ += Math.cos(Math.toRadians(mRenderer.mAngleX)) * 0.2;
-      mRenderer.mPosX -= Math.sin(Math.toRadians(mRenderer.mAngleX)) * 0.2;
+      mRenderer.mPosX += Math.sin(Math.toRadians(mRenderer.mAngleX)) * 0.2;
       requestRender();
       break;
 
     case BOTTOM:
       mRenderer.mPosZ -= Math.cos(Math.toRadians(mRenderer.mAngleX)) * 0.2;
-      mRenderer.mPosX += Math.sin(Math.toRadians(mRenderer.mAngleX)) * 0.2;
+      mRenderer.mPosX -= Math.sin(Math.toRadians(mRenderer.mAngleX)) * 0.2;
       requestRender();
       break;
 
     case LEFT:
-      mRenderer.mAngleX -= 0.2 * TRACKBALL_SCALE_FACTOR;
+      mRenderer.mAngleX += 0.2 * TRACKBALL_SCALE_FACTOR;
       requestRender();
       break;
 
     case RIGHT:
-      mRenderer.mAngleX += 0.2 * TRACKBALL_SCALE_FACTOR;
+      mRenderer.mAngleX -= 0.2 * TRACKBALL_SCALE_FACTOR;
       requestRender();
       break;
     }
