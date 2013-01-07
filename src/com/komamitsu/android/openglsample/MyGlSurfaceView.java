@@ -68,10 +68,31 @@ public class MyGlSurfaceView extends GLSurfaceView implements OnKeyEventListener
           mPosZ + (float) Math.cos(Math.toRadians(mAngleX)), 0f, 1f, 0f);
 
       gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-      // gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
+      gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
       gl.glEnableClientState(GL10.GL_NORMAL_ARRAY);
 
       mCube.draw(gl);
+
+      if (bullet != null) {
+        gl.glPushMatrix();
+        gl.glTranslatef(bulletX, bulletY, bulletZ);
+        gl.glRotatef(bulletAngle, 0, 0, 1);
+        gl.glRotatef(mAngleX, 0, 1, 0);
+        bullet.draw(gl);
+        gl.glPopMatrix();
+
+        bulletX += (float) Math.sin(Math.toRadians(mAngleX)) * 0.2;
+        bulletY += 0.03;
+        bulletZ += (float) Math.cos(Math.toRadians(mAngleX)) * 0.2;
+        bulletAngle += 10;
+
+        if (bulletX > 50 || bulletZ > 50) {
+          bullet = null;
+        }
+        else {
+          requestRender();
+        }
+      }
     }
 
     @Override
@@ -135,6 +156,12 @@ public class MyGlSurfaceView extends GLSurfaceView implements OnKeyEventListener
     public float mPosX = 0f;
     public float mPosY = 0f;
     public float mPosZ = -3f;
+
+    public Bullet bullet;
+    public float bulletX;
+    public float bulletY;
+    public float bulletZ;
+    public float bulletAngle;
   }
 
   private final float TRACKBALL_SCALE_FACTOR = 15.0f;
@@ -156,6 +183,12 @@ public class MyGlSurfaceView extends GLSurfaceView implements OnKeyEventListener
     case BOTTOM:
       mRenderer.mPosZ -= Math.cos(Math.toRadians(mRenderer.mAngleX)) * 0.2;
       mRenderer.mPosX -= Math.sin(Math.toRadians(mRenderer.mAngleX)) * 0.2;
+      /*
+      mRenderer.bullet = new Bullet();
+      mRenderer.ballX = mRenderer.mPosX;
+      mRenderer.ballY = mRenderer.mPosY;
+      mRenderer.ballZ = mRenderer.mPosZ;
+      */
       requestRender();
       break;
 
@@ -166,6 +199,14 @@ public class MyGlSurfaceView extends GLSurfaceView implements OnKeyEventListener
 
     case RIGHT:
       mRenderer.mAngleX -= 0.2 * TRACKBALL_SCALE_FACTOR;
+      requestRender();
+      break;
+
+    case FIRE:
+      mRenderer.bullet = new Bullet();
+      mRenderer.bulletX = mRenderer.mPosX;
+      mRenderer.bulletY = mRenderer.mPosY;
+      mRenderer.bulletZ = mRenderer.mPosZ;
       requestRender();
       break;
     }

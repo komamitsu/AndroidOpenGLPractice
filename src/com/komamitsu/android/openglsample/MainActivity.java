@@ -82,6 +82,14 @@ public class MainActivity extends Activity {
         }
       });
     }
+    findViewById(R.id.button_fire).setOnTouchListener(new OnTouchListener() {
+
+      @Override
+      public boolean onTouch(View v, MotionEvent event) {
+        mGLSurfaceView.onKeyEvent(EventType.FIRE);
+        return true;
+      }
+    });
   }
 
   @Override

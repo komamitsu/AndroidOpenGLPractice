@@ -101,40 +101,6 @@ class Cube
       0f, 1f, 0f,
       0f, 1f, 0f
     };
-    float colors[] = {
-      // 前面
-      0f, 0f, -1f, 1f,
-      0f, 0f, -1f, 1f,
-      0f, 0f, -1f, 1f,
-      0f, 0f, -1f, 1f,
-      // 裏面
-      0f, 0f, 1f, 1f,
-      0f, 0f, 1f, 1f,
-      0f, 0f, 1f, 1f,
-      0f, 0f, 1f, 1f,
-      // 左面
-      1f, 0f, 0f, 1f,
-      1f, 0f, 0f, 1f,
-      1f, 0f, 0f, 1f,
-      1f, 0f, 0f, 1f,
-      // 右面
-      -1f, 0f, 0f, 1f,
-      -1f, 0f, 0f, 1f,
-      -1f, 0f, 0f, 1f,
-      -1f, 0f, 0f, 1f,
-      // 上面
-      /*
-      0f, -1f, 0f, 1f,
-      0f, -1f, 0f, 1f,
-      0f, -1f, 0f, 1f,
-      0f, -1f, 0f, 1f,
-      */
-      // 下面
-      0f, 1f, 0f, 1f,
-      0f, 1f, 0f, 1f,
-      0f, 1f, 0f, 1f,
-      0f, 1f, 0f, 1f,
-    };
 
     // Buffers to be passed to gl*Pointer() functions
     // must be direct, i.e., they must be placed on the
@@ -155,12 +121,6 @@ class Cube
     mNormalBuffer = nbb.asFloatBuffer();
     mNormalBuffer.put(norms);
     mNormalBuffer.position(0);
-
-    ByteBuffer cbb = ByteBuffer.allocateDirect(colors.length * 4);
-    cbb.order(ByteOrder.nativeOrder());
-    mColorBuffer = cbb.asFloatBuffer();
-    mColorBuffer.put(colors);
-    mColorBuffer.position(0);
   }
 
   public void draw(GL10 gl)
@@ -191,5 +151,4 @@ class Cube
 
   private final FloatBuffer mVertexBuffer;
   private final FloatBuffer mNormalBuffer;
-  private final FloatBuffer mColorBuffer;
 }
